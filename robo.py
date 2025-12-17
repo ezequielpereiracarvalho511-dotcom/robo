@@ -45,11 +45,15 @@ class Robot:
         log_level = self.config.get('log_level', 'INFO')
         log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         
-        logging.basicConfig(
-            level=getattr(logging, log_level),
-            format=log_format
-        )
+        # Criar logger específico para este robô sem alterar a configuração global
         self.logger = logging.getLogger(self.name)
+        self.logger.setLevel(getattr(logging, log_level))
+        
+        # Adicionar handler se não existir
+        if not self.logger.handlers:
+            handler = logging.StreamHandler()
+            handler.setFormatter(logging.Formatter(log_format))
+            self.logger.addHandler(handler)
     
     def add_task(self, task: Callable, name: str = None):
         """

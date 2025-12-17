@@ -92,11 +92,19 @@ def generate_hash(data: str, algorithm: str = 'sha256') -> str:
     
     Args:
         data: Dados a serem hasheados
-        algorithm: Algoritmo de hash (md5, sha1, sha256, etc.)
+        algorithm: Algoritmo de hash (md5, sha1, sha256, sha512)
         
     Returns:
         Hash em formato hexadecimal
+        
+    Raises:
+        ValueError: Se o algoritmo não for suportado
     """
+    # Whitelist de algoritmos seguros
+    allowed_algorithms = ['md5', 'sha1', 'sha256', 'sha512']
+    if algorithm not in allowed_algorithms:
+        raise ValueError(f"Algoritmo não suportado. Use um dos seguintes: {allowed_algorithms}")
+    
     hash_obj = hashlib.new(algorithm)
     hash_obj.update(data.encode('utf-8'))
     return hash_obj.hexdigest()
@@ -159,8 +167,12 @@ def wait_until(condition: Callable[[], bool], timeout: float = 10.0, interval: f
     """
     start_time = time.time()
     while time.time() - start_time < timeout:
-        if condition():
-            return True
+        try:
+            if condition():
+                return True
+        except Exception:
+            # Ignora exceções na condição e continua tentando
+            pass
         time.sleep(interval)
     return False
 
