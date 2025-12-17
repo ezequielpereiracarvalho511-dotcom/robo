@@ -1,0 +1,9 @@
+{
+  "name": "MeuRobo",
+  "log_level": "INFO",
+  "task_delay": 0,
+  "retry_attempts": 3,
+  "timeout": 30,
+  "verbose": true,
+  "description": "Configuração de exemplo para o robô de automação"
+}
